@@ -5,7 +5,6 @@ const webpack = require('webpack');
 
 const src  = path.resolve(__dirname, 'src');
 const dist = path.resolve(__dirname, 'dist');
-const pub = path.resolve(__dirname, 'public');
 
 export default {
     mode: 'development',
@@ -58,8 +57,18 @@ export default {
 		    }
 		}]
 	    },
-	]
-    },
+	    {
+		test: /\.(woff|woff2|eot|ttf|otf)$/,
+		use: [{
+		    loader: 'url-loader',
+		    options: {
+			limit: 10000,
+			fallback: 'file-loader',
+			name: 'fonts/[name].[ext]',
+		    },
+		}]
+	    },
+    ]},
     performance: {
 	maxEntrypointSize: 50000000,
 	maxAssetSize: 50000000,
@@ -77,7 +86,6 @@ export default {
     ],
     devServer: {
 	static: {
-	    //directory: dist,
 	    directory: path.resolve(__dirname, "dist"),
 	},
 

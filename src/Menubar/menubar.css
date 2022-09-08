@@ -1,0 +1,21 @@
+#global_menubar {
+    margin-top: 5px;
+    padding: 10px 20px 10px 20px;
+    
+    border-radius: 10px;
+}
+
+#menuItemList {
+    font-size: small;
+}
+
+.menuItem {
+    border-radius: 10px;
+    margin: 0 10px 0 0;
+    background-color: white;
+}
+
+.viewItem {
+    font-size: small;
+    padding: -10px;
+}
