@@ -21,7 +21,7 @@ const Menubar = (props) => {
 
     return (
 	<Navbar id="global_menubar" color="secondary" dark {...props}>
-	    <NavbarBrand href="/">シフト管理システム</NavbarBrand>
+	    <NavbarBrand href={Env.urlRoute("")}>シフト管理システム</NavbarBrand>
 	    <Nav id="menuItemList" end="true">
 		<Dropdown nav isOpen={dropdownOpen} toggle={toggle} className="menuItem">
 		    <DropdownToggle nav caret>

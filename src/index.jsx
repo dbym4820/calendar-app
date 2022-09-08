@@ -16,7 +16,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ShiftCreatorRoutes = () => {
     return useRoutes([
 	{ path: Env.urlRoute(""), element: <Dashboard /> },
-	{ path: Env.urlRoute("/a"), element: <Dashboard /> },
+	{ path: Env.urlRoute("a"), element: <Dashboard /> },
     ]);
 }
 

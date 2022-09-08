@@ -29,34 +29,12 @@ const Dashboard = (props) => {
 	{ id: '3', title: 'Cさん', workedTime: 60 },
     ]);
     
-    // const handleDataSelect = (event) => {
-    // 	//動かす時？
-    // 	console.log(event)
-    // 	let id, resourceId;
-    // 	if(event.resource === undefined) {
-    // 	    // 新しいの作るとき
-    // 	    id = uuidv4();
-    // 	    resourceId = '0';
-	    
-    // 	} else {
-    // 	    resourceId = event.resource._resource.id;
-    // 	}
-    // 	const startStr = event.startStr;
-    // 	const endStr = event.endStr
-
-    // 	const newEventData = { resourceId: resourceId, title: "新しいシフト", start: startStr, end: endStr };
-    // 	const oldEventData = eventData;
-
-    // 	setEventData([newEventData, ...oldEventData]);
-    // }
 
     const handleDataSelect = (event) => {
-	//動かす時？
-	console.log(event)
 	const id = uuidv4();
 	let resourceId;
 	if(event.resource === undefined) {
-	    // 新しいの作るとき
+	    // 新しいの作るとき()
 	    resourceId = '0';
 	    
 	} else {

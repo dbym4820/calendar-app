@@ -1,8 +1,10 @@
 # シフト作成システム
 
 ## 動作環境
-- node.jsを入れる
+- node.jsを入れる(brew install node -> npm install -g n -> n stable)
 - npmが動作することを確認
 - ソースコードをダウンロードして，そのディレクトリに移動
-- そこで「npm start」とか打ってエラーなく実行できれば，URL（http://localhopst:3000 とか）がでてくるので，Webブラウザからアクセスしてみる
+- Nodeプロジェクトの依存ライブラリをローカルにダウンロードしてくる（npm install）
+- 実行（npm start）
+  - エラーなく実行できれば，URL（http://localhopst:3000 とか）がでてくるので，Webブラウザからアクセスしてみる
 
