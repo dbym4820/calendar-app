@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Shift Creator",
+  "name": "Work shift creation support system",
   "icons": [
     {
       "src": "favicon.ico",
