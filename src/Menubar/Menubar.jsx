@@ -25,14 +25,16 @@ const Menubar = (props) => {
 	    <Nav id="menuItemList" end="true">
 		<Dropdown nav isOpen={dropdownOpen} toggle={toggle} className="menuItem">
 		    <DropdownToggle nav caret>
-			観点別ビュー
+			ページ
 		    </DropdownToggle>
 		    <DropdownMenu>
-			<DropdownItem className="viewItem"><NavLink href="#">１日ビュー</NavLink></DropdownItem>
-			<DropdownItem className="viewItem"><NavLink href="#">１週間ビュー</NavLink></DropdownItem>
-			<DropdownItem className="viewItem"><NavLink href="#">１ヶ月ビュー</NavLink></DropdownItem>
+			<DropdownItem header>職員用</DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("shift-request-make")}>休日希望作成</NavLink></DropdownItem>
 			<DropdownItem divider />
-			<DropdownItem className="viewItem"><NavLink href="#">職員毎ビュー</NavLink></DropdownItem>
+			<DropdownItem header>シフト作成者用</DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("employee-edit")}>職員データ作成</NavLink></DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("data-gatharing")}>休日希望データの統合</NavLink></DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("dashboard")}>シフト作成</NavLink></DropdownItem>
 		    </DropdownMenu>
 		</Dropdown>
 	    </Nav>

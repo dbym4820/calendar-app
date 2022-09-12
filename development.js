@@ -19,19 +19,24 @@ export default {
     module: {
 	rules: [
 	    {
+		test: /\.worker\.js$/,
+		use: { loader: "worker-loader" },
+	    },
+	    {
 		test: /\.(js|jsx)$/,
 		exclude: /node_modules/,
 		use: 'babel-loader',
 	    },
+	    
 	    {
 		test: /\.txt$/,
 		exclude: /node_modules/,
 		use: 'raw-loader'
 	    },
-	    {
-		test: /\.json$/,
-		use: 'json-loader'
-	    },
+	    /* {
+	       test: /\.json$/,
+	       use: 'json-loader'
+	       }, */
 	    {
 		test: /\.css$/,
 		use: [
