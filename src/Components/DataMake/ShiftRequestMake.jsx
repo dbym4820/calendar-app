@@ -60,9 +60,7 @@ const ShiftRequestMake = (props) => {
     
     /********* カレンダーのドラッグ＆ドロップなどのイベント処理 ************/
     const updateShiftRequestData = (d) => {
-	console.log(d)
 	setShiftData(d);
-//	console.log(shiftData)
     }
     
     const handleDataSelect = (event) => {
@@ -120,6 +118,9 @@ const ShiftRequestMake = (props) => {
 	updateShiftRequestData(keepData);
     }
 
+    const dt = new Date();
+    const defaultDate = format(new Date(dt.getFullYear(), dt.getMonth()+1, 1), 'yyyy-MM-dd');
+
     return (
 	<Container>
 	    <Row>　</Row>
@@ -128,7 +129,9 @@ const ShiftRequestMake = (props) => {
 	    <Row>
 		<form>
 		    <label>名前：</label>
-		    <Input type="text" name="name" id="nameInput" placeholder="自身の名前を入力してください。（例．田中太郎）" onChange={checkName} />
+		    <Input type="text" name="name" id="nameInput"
+			   placeholder="自身の名前を入力してください。（例．田中太郎）"
+			   onChange={checkName} />
 		</form>
 	    </Row>
 	    <Row>　</Row>
@@ -144,6 +147,8 @@ const ShiftRequestMake = (props) => {
 		    }}
 		    events={shiftData}
 		    resourceAreaWidth="80px"
+		    showNonCurrentDates={false}
+		    initialDate={defaultDate}
 		    resourceAreaColumns={[{
 			field: 'title',
 			headerContent: '休日希望'

@@ -28,22 +28,14 @@ const EmployeeEdit = (props) => {
 	};
     }
     
-    const [ employeeData, setEmployeeData ] = useState([
-	createEmployee('0000000', '油谷', '知岐', 'r_member', 'ok', 'ok', 'ok', 'ok', 'ok'),
-	createEmployee('0000001', '森', '夏実', 'manager', 'ok', 'ok', 'ok', 'ng', 'ok'),
-	createEmployee('0000002', '田中', '太郎', 'parttime_member', 'ng', 'ok', 'ok', 'ok', 'ng'),
-	createEmployee('0000003', '山田', '一郎', 'parttime_member', 'ok', 'ok', 'ok', 'ok', 'ng'),
-	createEmployee('0000004', '佐藤', '浩二', 'r_member', 'ok', 'ng', 'ok', 'ok', 'ng'),
-    	createEmployee('0000005', '鈴木', '次郎', 'manager', 'ok', 'ok', 'ok', 'ok', 'ok'),
-    	createEmployee('0000006', '高橋', '大輔', 'parttime_member', 'ng', 'ok', 'ok', 'ok', 'ng')
-    ]);
+    const [ employeeData, setEmployeeData ] = useState([]);
     
     const createNewEmployeeData = () => {
 	return createEmployee(uuidv4(), '', '', 'parttime_member', 'ok', 'ok', 'ok', 'ok', 'ok');
     }
     
     const addEmployee = () => {
-	setEmployeeData([...employeeData, createNewEmployeeData()]);
+	setEmployeeData(prev => ([...prev, createNewEmployeeData()]));
     }
 
     const dataUpdate = (e, employee_member_id, updated_data_type) => {
@@ -64,7 +56,6 @@ const EmployeeEdit = (props) => {
 	    targetEmployee[updated_data_type] = e.target.value;
 	    setEmployeeData([ ...keepEmployeesHead, targetEmployee, ...keepEmployeesTail ]);
 	}
-	console.log(employeeData)
     }
 
     const handleRemove = (member_id) => {
@@ -136,11 +127,11 @@ const EmployeeEdit = (props) => {
 					</TableCell>
 					<TableCell align="center">{employee.member_id}</TableCell>
 					<TableCell align="center">
-					    <Input type='text' value={employee.last_name}
+					    <Input type='text' value={employee.last_name} placeholder='田中'
 						   onChange={(e) => {dataUpdate(e, employee.member_id, 'last_name')}} />
 					</TableCell>
 					<TableCell align='center'>
-					    <Input type='text' value={employee.first_name}
+					    <Input type='text' value={employee.first_name} placeholder='太郎'
 						   onChange={(e) => {dataUpdate(e, employee.member_id, 'first_name')}} />
 					</TableCell>
 					<TableCell align="center">

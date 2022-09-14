@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 
-import ShiftData from './Data/ShiftData.json';
+//import ShiftData from './Data/ShiftData.json';
 
 
 // 休み希望は確定
@@ -50,7 +50,7 @@ const ShiftCalculator = (ShiftData) => {
 	    // 検索対象データの中の指定する番号をランダム生成
 	    while(true) {
 		const random_number = generateRandomSelectNumber(target_data.length);
-		if(!selected_numbers.includes(random_number)) {
+		if(!selected_numbers.includes(random_number) || target_data.length-1 <= i) {
 		    // まだ選択されていないIndexの場合
 		    selection_data.push(target_data[random_number]); // 選択データを格納
 		    selected_numbers.push(random_number); // 選択済みのIndexを格納
@@ -58,7 +58,6 @@ const ShiftCalculator = (ShiftData) => {
 		}
 	    }
 	}
-
 	return selection_data;
     }
 
@@ -80,6 +79,11 @@ const ShiftCalculator = (ShiftData) => {
 	}).request;
     }
 
+    const isMemberHasAbility = (member_id, ability) => {
+	// ある職員が特定の職能を有しているかをT/Fで取得
+	const member = findMemberInfo(member_id);
+	return member.ability[ability] === 'ok';
+    }
 
     const findRandomMemberFromAbility = (target_ability) => {
 	// 特定の職能を持つ人達の中から１名をランダムで選択
@@ -142,10 +146,15 @@ const ShiftCalculator = (ShiftData) => {
 
     
     /******************** 仮生成後チェックで十分な計算量になりそうなもの ******************/
-    const jacketMemberCheck = (date, ability) => {
-
+    const dailyAbilityRequire = (shift_candidate, ability, minimal_number) => {
+	// 一定人数以上の特定職能を持つ人がいるか？
+	const isIncludeViolation = shift_candidate.map(date_data => {
+	    return date_data.working_candidate_member_ids.map(member => {
+		return isMemberHasAbility(member, ability);
+	    }).filter(d => d === false).length >= minimal_number;
+	}).includes(false);
+	return !isIncludeViolation;
     }
-
 
     /**************** 仮シフト候補の演算 ***************/
     const shiftCandidate = () => {
@@ -161,24 +170,36 @@ const ShiftCalculator = (ShiftData) => {
 	    violate_rules.push(violated_rule);
 	}
 
-	const limit_of_trials = 10; // 試行回数の上限
+	const limit_of_trials = 100; // 試行回数の上限
 
 	// 試行開始
 	for(let shift_generation_count = 0; shift_generation_count <= limit_of_trials; shift_generation_count++) {		
 	    shift_candidate_candidate = calendar.map(date => {
 		/******** マネージャーの選択 **************/
-		const manager = dailyManagerSelect(date.date); 		
+		const manager_cand = dailyManagerSelect(date.date);
+		let manager;
+		if(manager_cand === undefined) {
+		    manager = [];
+		} else {
+		    manager = [manager_cand];
+		}
+		
 		
 		/******** リーダーの選択 **************/
-		let leader = dailyLeaderSelect(date.date); // リーダーの選択
+		let leader_cand = dailyLeaderSelect(date.date); // リーダーの選択
 		for(let leader_gen_count = 0; leader_gen_count <= limit_of_trials; leader_gen_count++) {
-		    if(leader === manager) {
-			leader = dailyLeaderSelect(date.date); // マネージャーとは別人になるまで選択
-
+		    if(leader_cand === manager) {
+			leader_cand = dailyLeaderSelect(date.date); // マネージャーとは別人になるまで選択
 			if(leader_gen_count === limit_of_trials) assertViolate('cannot select leader')
 		    } else {
 			break;
 		    }
+		}
+		let leader;
+		if(leader_cand === undefined) {
+		    leader = [];
+		} else {
+		    leader = [leader_cand];
 		}
 
 		
@@ -201,31 +222,27 @@ const ShiftCalculator = (ShiftData) => {
 
 		return {
 		    date: date.date,
-		    yobi: date.yobi,
 		    working_candidate_member_ids: [
-			manager, leader, ...other_members,
+			...manager, ...leader, ...other_members,
 		    ]
 		}
 		
 	    });
 
-	    
 	    // 各ルールを満たすシフトになっているか演算
-	    const shift_rules_satisfactions = {
-		//leader_exist: dailyLeaderRequire(shift_candidate_candidate),
+	    const shift_rules_satisfactions = [
+		//dailyLeaderRequire(shift_candidate_candidate),// leader_exist
+		//dailyAbilityRequire(shift_candidate_candidate, 'daily_report', 1), // 日報書く人
+		//dailyAbilityRequire(shift_candidate_candidate, 'conduct', 1), // 指示出す人
+		//dailyAbilityRequire(shift_candidate_candidate, 'jacket', 1), // 加工
 		
+	    ];
+	    if(!shift_rules_satisfactions.includes(false)) {
+		// 全ルールを満たしていればそのシフト案を出力
+		return { shift_candidate: shift_candidate_candidate, violations: violate_rules };
 	    }
-
-	    // 全ルールを満たしていればそのシフト案を出力
-	    // if(Object.keys(shift_rules_satisfactions).map(key => {
-	    // 	return shift_rules_satisfactions.key
-	    // }).filter(d => d===false).length === 0) {
-	    // 	return shift_candidate_candidate;
-	    // }
-	    //}
 	}
-
-	return { shiftCandidate: shift_candidate_candidate, violations: violate_rules };
+	return null;
     }
 
     return shiftCandidate();
