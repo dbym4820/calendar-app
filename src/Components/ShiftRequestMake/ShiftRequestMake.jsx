@@ -1,5 +1,7 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Env from '../../Env';
+import SelfUtilities from '../../SelfUtilities';
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -20,7 +22,7 @@ const ShiftRequestMake = (props) => {
     // これで作成したデータを統合したらシフトデータになるっていうイメージ
 
     const [ shiftData, setShiftData ] = useState([]);
-    const [ userData, setUserData ] = useState();
+    const [ userName, setUserData ] = useState();
     const [ consultData, setConsultData ] = useState();
 
     
@@ -38,7 +40,7 @@ const ShiftRequestMake = (props) => {
     
     const gatherShiftRequestData = () => {
 	return {
-	    person_name: userData,
+	    person_name: userName,
 	    shift_data: shiftData,
 	    consult: consultData
 	};
@@ -46,7 +48,7 @@ const ShiftRequestMake = (props) => {
     
     const exportShiftData = () => {
 	// シフトデータのエクスポート
-	exportJson(gatherShiftRequestData(), 'shift-request-'+userData);
+	SelfUtilities.exportJsonFile(gatherShiftRequestData(), 'shift-request-'+userName);
     }
 
 

@@ -1,12 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Env from '../../Env';
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-
-import listPlugin from '@fullcalendar/list';
-import interactionPlugin from "@fullcalendar/interaction";
+import SelfUtilities from '../../SelfUtilities';
 
 import { v4 as uuidv4 } from 'uuid';
 import {format} from 'date-fns';
@@ -14,14 +8,16 @@ import {format} from 'date-fns';
 import { Container, Row, Col, Button, Badge, Input } from 'reactstrap';
 import './dashboard.css';
 
+import MainShiftCalendar from './Parts/MainShiftCalendar';
+import AssignInfoCalendar from './Parts/AssignInfoCalendar';
+import ImportButton from '../SharedComponents/ImportButton';
+
 import ShiftCalculator from '../../Logic/ShiftCalculator';
 //import ShiftData from '../../Logic/Data/ShiftData.json';
 
 const Dashboard = (props) => {
 
     /*********** データのセット ************/
-
-    // データのセット
     const [shiftData, setShiftData] = useState({});
     const [shiftFileUploaded, setShiftFileUploaded] = useState({ uploaded: false, reflected: false });
     
@@ -30,7 +26,8 @@ const Dashboard = (props) => {
     const [ assignedNumberData, setAssignedNumberData ] = useState([
 	{ id: '1', resourceId: '00000000', title: "人", start: "2022-09-02T00:00:00", end: "2022-09-05T05:00:00" },
     ]); // 人数データ
-    
+
+    /*********** データの抽出・整形 ************/
     const findMemberInfo = (member_id) => {
 	// 特定のメンバーIDを持つメンバーのデータを取得
 	return shiftData.member_data.find(m => {
@@ -87,35 +84,6 @@ const Dashboard = (props) => {
 	return formatted_shift_data.reduce((acc, val) => acc.concat(val), []);
     }
 
-    const calcShift = () => {
-
-	// １からシフトをランダム生成
-	const shift_request = shiftData;
-	const shift_candidate = ShiftCalculator(shift_request);
-	if(shift_candidate !== null) {
-	    setShiftData((prev) => ({...prev, shift_candidate: shift_candidate}));
-
-	    const isWorkOnADay = (date, member_id) => {
-		const day_workers = shift_candidate.shift_candidate.find(d => d.date===date);
-		return day_workers.working_candidate_member_ids.includes(member_id);
-	    }
-	    const new_shift_request_dammy = shiftData.shift_request.map(member => {
-		return {
-		    member_id: member.member_id,
-		    request: member.request.map(day => {
-			return { date: day.date, ok_ng: isWorkOnADay(day.date, member.member_id) ? 'ok' : 'ng' }
-		    })
-		}
-	    })
-	    const new_event = convertShiftRequestDataToCalendarEvent(new_shift_request_dammy);
-	    setShiftData((prev) => ({...prev, shift_request: new_shift_request_dammy}));
-	    setEventData(new_event);
-	} else {
-	    alert('制約を満たすシフトを時間内に組めませんでした。')
-	}
-    }
-    
-
     /*********** データの読み込み・書き出し（インポート・エクスポート） **********/
     const importShiftData = (e) => {
 	// シフトデータのインポート
@@ -136,14 +104,7 @@ const Dashboard = (props) => {
     
     const exportShiftData = () => {
 	// シフトデータのエクスポート
-	const json = JSON.stringify(shiftData);
-	const blob = new Blob([json], { type: 'application/json' });
-	const link_dom = document.createElement("a");
-	const url =  URL.createObjectURL(blob);
-	link_dom.href = url;
-	link_dom.download = format(new Date(), 'yyyyMMdd')+'-shift-candidate.json';
-	link_dom.click();
-	link_dom.remove();
+	SelfUtilities.exportJsonFile(shiftData, 'shift-candidate');	
     }
 
     
@@ -265,90 +226,61 @@ const Dashboard = (props) => {
 	updateShiftRequestData(keepData);
     }
 
-    
-    const dt = new Date();
-    const defaultDate = format(new Date(dt.getFullYear(), dt.getMonth()+1, 1), 'yyyy-MM-dd');
+
+    /*********** その他の演算 ************/
+    const calcShift = () => {
+	// シフトをランダム生成
+	const shift_request = shiftData;
+	const shift_candidate = ShiftCalculator(shift_request);
+	if(shift_candidate !== null) {
+	    setShiftData((prev) => ({...prev, shift_candidate: shift_candidate}));
+
+	    const isWorkOnADay = (date, member_id) => {
+		const day_workers = shift_candidate.shift_candidate.find(d => d.date===date);
+		return day_workers.working_candidate_member_ids.includes(member_id);
+	    }
+	    const new_shift_request_dammy = shiftData.shift_request.map(member => {
+		return {
+		    member_id: member.member_id,
+		    request: member.request.map(day => {
+			return { date: day.date, ok_ng: isWorkOnADay(day.date, member.member_id) ? 'ok' : 'ng' }
+		    })
+		}
+	    })
+	    const new_event = convertShiftRequestDataToCalendarEvent(new_shift_request_dammy);
+	    setShiftData((prev) => ({...prev, shift_request: new_shift_request_dammy}));
+	    setEventData(new_event);
+	} else {
+	    alert('制約を満たすシフトを時間内に組めませんでした。')
+	}
+    }
     
     return (
 	<Container>
 	    <Row>　</Row>
 	    <Row className="monthly_calendar">
-		<FullCalendar
-		    locale="ja" // 日本語化
-		    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, resourceTimelinePlugin]}
-		    initialView="resourceTimelineMonth"
-		    headerToolbar={{
-			left: 'today prev,next',
-			left: 'title',
-			//right: 'resourceTimelineMonth,timeGridWeek,dayGridMonth',
-		    }}
-		    events={eventData}
-		    resourceAreaWidth="150px"
-		    resourceAreaColumns={[{
-			field: 'title',
-			headerContent: '人員'
-		    }, {
-			field: 'workedTime',
-			headerContent: '総日数'
-		    }, {
-			field: 'rank',
-			headerContent: '職位'
-		    }]}
-		    resources={resourceData}
-		    initialDate={defaultDate}
-		    showNonCurrentDates={false}
-		    aspectRatio="1.5"
-		    height="60vh"
-		    selectable={true}
-		    editable={true}
-		    selectMirror={true}
-		    select={handleDataSelect}
-		    eventDrop={handleDrop}
-		    eventResize={handleResize}
-		    eventClick={handleRemove}
-		/>
+		<MainShiftCalendar
+		    eventData={eventData}
+		    resourceData={resourceData}
+		    handleSelect={handleDataSelect}
+		    handleDrop={handleDrop}
+		    handleResize={handleResize}
+		    handleRemove={handleRemove}
+		/>		
 	    </Row>
 	    <Row className="monthly_calendar assignCount">
-		<FullCalendar
-		    locale="ja" // 日本語化
-		    plugins={[dayGridPlugin, timeGridPlugin, resourceTimelinePlugin, interactionPlugin]}
-		    initialView="resourceTimelineMonth"
-		    headerToolbar={{
-			left: '',
-			right: '',
-		    }}
-		    events={assignedNumberData}
-		    resourceAreaWidth="150px"
-		    resourceAreaColumns={[{
-			field: 'title',
-			headerContent: 'アサイン人数'
-		    }]}
-		    resources={[{ resourceId: 'all_num', title: '総人数' },
-				{ resourceId: 'manager_num', title: 'マネージャー'},
-				{ resourceId: 'r_member_num', title: '正社員'},
-				{ resourceId: 'parttime_member_num', title: 'パートタイム'},
-				{ resourceId: 'daily_report_num', title: '日報'},
-				{ resourceId: 'conduct_num', title: '指示'},
-				{ resourceId: 'jacket', title: '加工'},
-			       ]}
-		    aspectRatio="1.5"
-		    height="20vh"
-		    selectable={false}
-		    editable={false}
-		    selectMirror={false}
+		<AssignInfoCalendar
+		    assignedNumber={assignedNumberData}
 		/>
 	    </Row>
 	    <Row>　</Row>
 	    <Row id="temporary_console">
 		{/* <Col><p>問題点: {violateData.length !== 0 ? violateData : 'なし'}</p></Col> */}
 		<Col className='btn_field'>
-		    <form name='shift_json_import'>
-			<Button color='primary' size='sm'>
-			    <label>シフトデータのインポート</label><br />
-			    <Input name='shift_file' type='file'
-				   onChange={importShiftData}/>
-			</Button>
-		    </form>
+		    <ImportButton
+			label='シフトデータのインポート'
+			handleImportFile={importShiftData}
+		    />
 		</Col>
 		<Col className='btn_field'>
 		    <Button color={shiftFileUploaded.uploaded ? 'info' : 'secondary'}  size='lg'

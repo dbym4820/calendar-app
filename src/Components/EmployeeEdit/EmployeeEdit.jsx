@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Env from '../../Env';
+import SelfUtilities from '../../SelfUtilities';
 
 import { v4 as uuidv4 } from 'uuid';
 import {format} from 'date-fns';
@@ -14,6 +15,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+
+import ImportButton from '../SharedComponents/ImportButton';
 
 const EmployeeEdit = (props) => {
     // 職員データの一覧を表示・編集するインタフェース
@@ -64,6 +67,7 @@ const EmployeeEdit = (props) => {
 
     /********** データの保存 *********/
     const exportJson = (file_content, file_name) => {
+	
 	const json = JSON.stringify(file_content);
 	const blob = new Blob([json], { type: 'application/json' });
 	const link_dom = document.createElement("a");
@@ -76,7 +80,7 @@ const EmployeeEdit = (props) => {
     
     const exportEmployeeData = () => {
 	// 職員データのエクスポート
-	exportJson(employeeData, 'employees');
+	SelfUtilities.exportJsonFile(employeeData, 'employees');
     }
 
 
@@ -101,7 +105,7 @@ const EmployeeEdit = (props) => {
 			<Table aria-label="employee table">
 			    <TableHead>
 				<TableRow>
-				    <TableCell align="left" colSpan={1}>データ</TableCell>
+				    <TableCell align="left" colSpan={1}></TableCell>
 
 				    <TableCell align="left" colSpan={4}>職員基本データ</TableCell>
 				    <TableCell align="left" colSpan={5}>職能</TableCell>
@@ -120,6 +124,27 @@ const EmployeeEdit = (props) => {
 				</TableRow>
 			    </TableHead>
 			    <TableBody>
+				<TableRow className='example_row'>
+				    <TableCell align="center">
+					<Button>×</Button>
+				    </TableCell>
+				    <TableCell align="center">例：82c25ceb-4bd0-42d7-8d09-400cfe9df177</TableCell>
+				    <TableCell align="center"><Input tyep='text' size={2}  disabled value='田中' /></TableCell>
+				    <TableCell align='center'><Input tyep='text' size={2} disabled value='太郎' /></TableCell>
+				    <TableCell align="center">
+					<Input type='select' disabled value='r_member'>
+					    <option value='manager'>マネージャー</option>
+					    <option value='r_member'>正社員</option>
+					    <option value='parttime_member'>パートタイム職員</option>
+					</Input>
+				    </TableCell>
+				    <TableCell align="center"><Input checked readOnly type='checkbox' /></TableCell>
+				    <TableCell align="center"><Input checked={false} readOnly type='checkbox' /></TableCell>
+				    <TableCell align="center"><Input checked={false} readOnly type='checkbox' /></TableCell>
+				    <TableCell align="center"><Input checked={false} readOnly type='checkbox' /></TableCell>
+				    <TableCell align="center"><Input checked readOnly type='checkbox' /></TableCell>
+				</TableRow>
+
 				{employeeData.map((employee) => (
 				    <TableRow key={employee.member_id}>
 					<TableCell align="center">
@@ -127,11 +152,11 @@ const EmployeeEdit = (props) => {
 					</TableCell>
 					<TableCell align="center">{employee.member_id}</TableCell>
 					<TableCell align="center">
-					    <Input type='text' value={employee.last_name} placeholder='田中'
+					    <Input type='text' size={2} value={employee.last_name}
 						   onChange={(e) => {dataUpdate(e, employee.member_id, 'last_name')}} />
 					</TableCell>
 					<TableCell align='center'>
-					    <Input type='text' value={employee.first_name} placeholder='太郎'
+					    <Input type='text' size={2} value={employee.first_name}
 						   onChange={(e) => {dataUpdate(e, employee.member_id, 'first_name')}} />
 					</TableCell>
 					<TableCell align="center">
@@ -182,16 +207,13 @@ const EmployeeEdit = (props) => {
 		<Col className='btn_field'>
 		    <Row>
 			<Col>
-			    <form name='json_import'>
-				<Button color='primary' size='sm'>
-				    <label>職員データのインポート</label><br />
-				    <Input name='import_file' type='file'
-					   onChange={importEmployeeData} />
-				</Button>
-			    </form>
+			    <ImportButton
+				label='職員データのインポート'
+				handleImportFile={importEmployeeData}
+			    />
 			</Col>
 			<Col>
-			    <Button className='data_btn' color='success' size='sm'
+			    <Button className='data_btn' color='success' size='lg'
 				    onClick={exportEmployeeData}>
 				職員データのエクスポート
 			    </Button>

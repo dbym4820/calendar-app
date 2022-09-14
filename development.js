@@ -96,5 +96,5 @@ export default {
 
 	historyApiFallback: true,
     },
-    devtool: "eval-source-map",
+    devtool: "source-map",
 }

@@ -2,3 +2,7 @@
     font-size: xx-small;
     height: 60vh;
 }
+
+.example_row {
+    background-color: gray;
+}

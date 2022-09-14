@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Env from '../../Env';
+import SelfUtilities from '../../SelfUtilities';
 
 import { v4 as uuidv4 } from 'uuid';
 import {format} from 'date-fns';
@@ -13,11 +14,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import ImportButton from '../SharedComponents/ImportButton';
 
-import './data_gatharing.css';
+import './data_gathering.css';
 
 
-const DataGatharing = (props) => {
+const DataGathering = (props) => {
     // 従業員データ一覧を作成するインタフェース
     const [targetYear, setTargetYear] = useState(new Date().getFullYear());
     const [targetMonth, setTargetMonth] = useState(new Date().getMonth() + 2);
@@ -140,15 +142,7 @@ const DataGatharing = (props) => {
     }
     
     const exportShiftData = () => {
-	// データの出力
-	const json = JSON.stringify(shiftData);
-	const blob = new Blob([json], { type: 'application/json' });
-	const link_dom = document.createElement("a");
-	const url =  URL.createObjectURL(blob);
-	link_dom.href = url;
-	link_dom.download = format(new Date(), 'yyyyMMdd')+'-shift-data.json';
-	link_dom.click();
-	link_dom.remove();
+	SelfUtilities.exportJsonFile(shiftData, 'shift-data')
     }
 
     return (
@@ -174,12 +168,13 @@ const DataGatharing = (props) => {
 					    <TableRow key={day.date}>
 						<TableCell align="center">{day.date}</TableCell>
 						<TableCell align="center">
-						    <Input className='minimal_number_input'
+						    <Input className='minimal_number_input number_input'
+							   size={2}
 							   type='number' value={day.require_min_member_number}
 							   onChange={(e) => dataUpdate(e, day.date, 'require_min_member_number')} />
 						</TableCell>
 						<TableCell align='center'>
-						    <Input className='max_number_input'
+						    <Input className='max_number_input number_input'
 							   type='number' value={day.require_max_member_number}
 							   onChange={(e) => dataUpdate(e, day.date, 'require_max_member_number')} />
 						</TableCell>
@@ -204,26 +199,18 @@ const DataGatharing = (props) => {
 
 		    <Row>
 			<Col>
-			    <form name='employee_json_import'>
-				<Button color='primary' size='sm'>
-				    <label>職員データのインポート</label><br />
-				    <Input name='employee_file' type='file'
-					   onChange={importEmployeeData} />
-				</Button>
-			    </form>
+			    <ImportButton
+				label='職員データのインポート'
+				handleImportFile={importEmployeeData} />
 			</Col>
 		    </Row>
 		    <Row>　</Row>
 		    <Row>
 			<Col>
-			    <form name='shift_request_json_import'>
-				<Button color='primary'
-					size='sm'>
-				    <label>休日希望データのインポート</label><br />
-				    <Input name='shift_request_file' type='file' multiple
-					   onChange={importShiftRequestData} />
-				</Button>
-			    </form>
+			    <ImportButton
+				label='休日希望データのインポート'
+				handleImportFile={importShiftRequestData} />
+
 			</Col>
 		    </Row>
 		    <Row>　</Row>
@@ -258,4 +245,4 @@ const DataGatharing = (props) => {
     );
 };
 
-export default DataGatharing;
+export default DataGathering;

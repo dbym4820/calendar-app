@@ -33,7 +33,7 @@ const Menubar = (props) => {
 			<DropdownItem divider />
 			<DropdownItem header>シフト作成者用</DropdownItem>
 			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("employee-edit")}>職員データ作成</NavLink></DropdownItem>
-			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("data-gatharing")}>休日希望データの統合</NavLink></DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("data-gathering")}>休日希望データの統合</NavLink></DropdownItem>
 			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("dashboard")}>シフト作成</NavLink></DropdownItem>
 		    </DropdownMenu>
 		</Dropdown>

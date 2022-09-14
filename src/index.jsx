@@ -11,9 +11,9 @@ import Menubar from './Menubar/Menubar';
 
 
 import Dashboard from './Components/Dashboard/Dashboard';
-import ShiftRequestMake from './Components/DataMake/ShiftRequestMake';
-import EmployeeEdit from './Components/DataMake/EmployeeEdit';
-import DataGatharing from './Components/DataMake/DataGatharing';
+import ShiftRequestMake from './Components/ShiftRequestMake/ShiftRequestMake';
+import EmployeeEdit from './Components/EmployeeEdit/EmployeeEdit';
+import DataGathering from './Components/DataGathering/DataGathering';
 
 import ShiftData from './Logic/Data/ShiftData.json';
 
@@ -46,7 +46,7 @@ const Home = (props) => {
 			    </a>{'　'}
 			</Col>
 			<Col>
-			    <a href={Env.urlRoute('data-gatharing')}>
+			    <a href={Env.urlRoute('data-gathering')}>
 				<Button color='primary'>
 				    休日希望の統合
 				</Button>
@@ -77,7 +77,7 @@ const ShiftCreatorRoutes = () => {
 	{ path: Env.urlRoute(""), element: <Home /> },
 	{ path: Env.urlRoute("dashboard"), element: <Dashboard /> },
 	{ path: Env.urlRoute("employee-edit"), element: <EmployeeEdit /> },
-	{ path: Env.urlRoute("data-gatharing"), element: <DataGatharing /> },
+	{ path: Env.urlRoute("data-gathering"), element: <DataGathering /> },
 	
 	{ path: Env.urlRoute("shift-request-make"), element: <ShiftRequestMake /> },
 	{ path: Env.urlRoute("shift-data"), element: <ShiftDataJSON /> },

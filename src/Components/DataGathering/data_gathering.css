@@ -6,15 +6,15 @@
 }
 
 .minimal_number_input {
-    max-width: 10em;
+    max-width: 5em;
 }
 
-
 .max_number_input {
-    max-width: 10em;
+    max-width: 5em;
 }
 
 .shift_export_btn {
     max-width: 10px;
     position: relative;
 }
+
