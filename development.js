@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
 const src  = path.resolve(__dirname, 'src');
-const dist = path.resolve(__dirname, 'dist');
+const dist = path.resolve(__dirname, 'docs');
 
 export default {
     mode: 'development',
@@ -91,7 +91,7 @@ export default {
     ],
     devServer: {
 	static: {
-	    directory: path.resolve(__dirname, "dist"),
+	    directory: path.resolve(__dirname, "docs"),
 	},
 
 	historyApiFallback: true,
