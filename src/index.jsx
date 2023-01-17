@@ -93,7 +93,7 @@ const ShiftCreator = () => {
 			<Menubar/ >
 		    </Row>
 		    <Row>
-			<Router>
+			<Router basename="/shift-creator/">
 			    <ShiftCreatorRoutes />
 			</Router>
 		    </Row>
