@@ -78,7 +78,6 @@ const ShiftCreatorRoutes = () => {
 	{ path: "/dashboard", element: <Dashboard /> },
 	{ path: "/employee-edit", element: <EmployeeEdit /> },
 	{ path: "/data-gathering", element: <DataGathering /> },
-	
 	{ path: "/shift-request-make", element: <ShiftRequestMake /> },
 	{ path: "/shift-data", element: <ShiftDataJSON /> },
     ]);
@@ -93,7 +92,7 @@ const ShiftCreator = () => {
 			<Menubar/ >
 		    </Row>
 		    <Row>
-		      <Router basename={"/shift-creator/"}>
+			    <Router basename={Env.getEnv('applicationRoot')}>
 			    <ShiftCreatorRoutes />
 			</Router>
 		    </Row>
