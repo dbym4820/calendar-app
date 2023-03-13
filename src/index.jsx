@@ -29,7 +29,7 @@ const Home = (props) => {
 	    <Row>
 		<Col>
 		    <h2>職員用</h2>
-		    <a href={Env.urlRoute('shift-request-make')}>
+		    <a href='shift-request-make'>
 			<Button color='success'>
 			    休日希望の作成
 			</Button>
@@ -39,21 +39,21 @@ const Home = (props) => {
 		    <Row>
 			<h2>シフト作成者用</h2>
 			<Col>
-			    <a href={Env.urlRoute('employee-edit')}>
+			    <a href='employee-edit'>
 				<Button color='primary'>
 				    職員データの作成
 				</Button>
 			    </a>{'　'}
 			</Col>
 			<Col>
-			    <a href={Env.urlRoute('data-gathering')}>
+			    <a href='data-gathering'>
 				<Button color='primary'>
 				    休日希望の統合
 				</Button>
 			    </a>{'　'}
 			</Col>
 			<Col>
-			    <a href={Env.urlRoute('dashboard')}>
+			    <a href='dashboard'>
 				<Button color='primary'>
 				    シフト案作成
 				</Button>
@@ -74,13 +74,12 @@ const ShiftDataJSON = () => {
 
 const ShiftCreatorRoutes = () => {
     return useRoutes([
-	{ path: Env.urlRoute(""), element: <Home /> },
-	{ path: Env.urlRoute("dashboard"), element: <Dashboard /> },
-	{ path: Env.urlRoute("employee-edit"), element: <EmployeeEdit /> },
-	{ path: Env.urlRoute("data-gathering"), element: <DataGathering /> },
-	
-	{ path: Env.urlRoute("shift-request-make"), element: <ShiftRequestMake /> },
-	{ path: Env.urlRoute("shift-data"), element: <ShiftDataJSON /> },
+	{ path: "/", element: <Home /> },
+	{ path: "/dashboard", element: <Dashboard /> },
+	{ path: "/employee-edit", element: <EmployeeEdit /> },
+	{ path: "/data-gathering", element: <DataGathering /> },
+	{ path: "/shift-request-make", element: <ShiftRequestMake /> },
+	{ path: "/shift-data", element: <ShiftDataJSON /> },
     ]);
 }
 
@@ -93,7 +92,7 @@ const ShiftCreator = () => {
 			<Menubar/ >
 		    </Row>
 		    <Row>
-			<Router basename="/shift-creator/">
+			    <Router basename={Env.getEnv('applicationRoot')}>
 			    <ShiftCreatorRoutes />
 			</Router>
 		    </Row>

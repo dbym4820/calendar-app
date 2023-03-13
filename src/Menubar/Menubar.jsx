@@ -21,7 +21,7 @@ const Menubar = (props) => {
 
     return (
 	<Navbar id="global_menubar" color="secondary" dark {...props}>
-	    <NavbarBrand href={Env.urlRoute("")}>シフト管理システム</NavbarBrand>
+	    <NavbarBrand href="/">シフト管理システム</NavbarBrand>
 	    <Nav id="menuItemList" end="true">
 		<Dropdown nav isOpen={dropdownOpen} toggle={toggle} className="menuItem">
 		    <DropdownToggle nav caret>
@@ -29,12 +29,12 @@ const Menubar = (props) => {
 		    </DropdownToggle>
 		    <DropdownMenu>
 			<DropdownItem header>職員用</DropdownItem>
-			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("shift-request-make")}>休日希望作成</NavLink></DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href="/shift-request-make">休日希望作成</NavLink></DropdownItem>
 			<DropdownItem divider />
 			<DropdownItem header>シフト作成者用</DropdownItem>
-			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("employee-edit")}>職員データ作成</NavLink></DropdownItem>
-			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("data-gathering")}>休日希望データの統合</NavLink></DropdownItem>
-			<DropdownItem className="viewItem"><NavLink href={Env.urlRoute("dashboard")}>シフト作成</NavLink></DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href="/employee-edit">職員データ作成</NavLink></DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href="/data-gathering">休日希望データの統合</NavLink></DropdownItem>
+			<DropdownItem className="viewItem"><NavLink href="/dashboard">シフト作成</NavLink></DropdownItem>
 		    </DropdownMenu>
 		</Dropdown>
 	    </Nav>
