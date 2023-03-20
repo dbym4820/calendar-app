@@ -4,8 +4,8 @@ if (typeof Env === "undefined"){
 
 Env.getEnv = (param) => {
     const env = {
-	    "applicationRoot": "/",
-	    //"applicationRoot": "/shift-creator/",
+	    //"applicationRoot": "/",
+	    "applicationRoot": "/shift-creator/",
 	    //"APIServerAddress": "http://localhost:8000",
     };
     return env[param];
